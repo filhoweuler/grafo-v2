@@ -150,48 +150,52 @@ public class GrafoClient {
 			v = new Vertice(8, 1, "Vertice ocho.", 1.1);
 			client.adiciona_vertice(v);
 
-			// a = new Aresta(1, 2, 1.55667, true, "Aresta um");
-			// client.adiciona_aresta(a);
+			client.deleta_vertice(8);
+			massert(client.le_vertice(8).getNome() == -1);
+
+			a = new Aresta(1, 2, 1.55667, true, "Aresta um");
+			client.adiciona_aresta(a);
 			
-			// a = new Aresta(3, 1, 1.55667, true, "Aresta dois");
-			// client.adiciona_aresta(a);
+			a = new Aresta(3, 1, 1.55667, true, "Aresta dois");
+			client.adiciona_aresta(a);
 
-			// a = new Aresta(4, 1, 1.55667, true, "Aresta tres");
-			// client.adiciona_aresta(a);
+			a = new Aresta(4, 1, 1.55667, true, "Aresta tres");
+			client.adiciona_aresta(a);
 
-			// a = new Aresta(4, 3, 1.55667, false, "Aresta quatro");
-			// client.adiciona_aresta(a);
+			a = new Aresta(4, 3, 1.55667, false, "Aresta quatro");
+			client.adiciona_aresta(a);
 
-			// a = new Aresta(4, 5, 1.55667, true, "Aresta cinco");
-			// client.adiciona_aresta(a);
+			a = new Aresta(4, 5, 1.55667, true, "Aresta cinco");
+			client.adiciona_aresta(a);
 
-			// a = new Aresta(5, 7, 2.5, true, "Aresta cinco");
-			// client.adiciona_aresta(a);
+			a = new Aresta(5, 7, 2.5, true, "Aresta cinco");
+			client.adiciona_aresta(a);
 
-			// a = new Aresta(2, 3, 1.55667, true, "Aresta seis");
-			// client.adiciona_aresta(a);
+			a = new Aresta(2, 3, 1.55667, true, "Aresta seis");
+			client.adiciona_aresta(a);
 
-			// client.listar_arestas();
-			// client.listar_vertices();
+			List<Aresta> res = client.listar_arestas();
+			for(Aresta ax : res) System.out.println(ax);
+			client.listar_vertices();
 
-			// client.listar_arestas_vertice(4);
-			// client.listar_vizinhos_vertice(4);
+			client.listar_arestas_vertice(4);
+			client.listar_vizinhos_vertice(4);
 
-			// client.dijkstra(4);
+			client.dijkstra(4);
 
-			// client.deleta_vertice(4);
-			// client.listar_arestas();
+			client.deleta_vertice(4);
+			client.listar_arestas();
 
-			// client.deleta_aresta(1, 2);
-			// client.deleta_aresta(1, 2);
+			client.deleta_aresta(1, 2);
+			client.deleta_aresta(1, 2);
 
-			// a = new Aresta(4, 3, 2.55667, false, "Aresta quatro");
-			// client.atualiza_aresta(4, 3, a);
-			// client.listar_arestas();
+			a = new Aresta(4, 3, 2.55667, false, "Aresta quatro");
+			client.atualiza_aresta(4, 3, a);
+			client.listar_arestas();
 			
-			// v.setCor(88);
-			// client.atualiza_vertice(8, v);
-			// client.listar_vertices();
+			v.setCor(88);
+			client.atualiza_vertice(8, v);
+			client.listar_vertices();
 
 
 
@@ -206,7 +210,7 @@ public class GrafoClient {
 			// 	client.graph_mutex_release();
 			// }
 
-			// client.listar_arestas();
+			client.listar_arestas();
 
 			transport.close();
 

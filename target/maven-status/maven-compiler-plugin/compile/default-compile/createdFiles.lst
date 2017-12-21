@@ -35,6 +35,7 @@ grafo/Grafo$listar_vertices_args$_Fields.class
 grafo/Grafo$AsyncClient$atualiza_aresta_call.class
 grafo/Grafo$le_aresta_result$le_aresta_resultStandardSchemeFactory.class
 grafo/GrafoServer.class
+grafo/AtualizaVertice.class
 grafo/Grafo$listar_arestas_args$listar_arestas_argsTupleScheme.class
 grafo/Grafo$graph_mutex_release_args$graph_mutex_release_argsTupleSchemeFactory.class
 grafo/Grafo$adiciona_vertice_args.class
@@ -65,6 +66,7 @@ grafo/Grafo$le_vertice_args$le_vertice_argsTupleScheme.class
 grafo/Grafo$le_aresta_args$le_aresta_argsTupleScheme.class
 grafo/Grafo$deleta_arestas_vertice_result$deleta_arestas_vertice_resultTupleScheme.class
 grafo/Grafo$AsyncProcessor$listar_vizinhos_vertice.class
+grafo/AtualizaAresta.class
 grafo/Grafo$listar_arestas_args.class
 grafo/Grafo$adiciona_aresta_args$adiciona_aresta_argsStandardSchemeFactory.class
 grafo/Grafo$listar_vertices_local_args$listar_vertices_local_argsStandardSchemeFactory.class
@@ -86,6 +88,7 @@ grafo/Grafo$AsyncProcessor$listar_arestas_vertice$1.class
 grafo/Grafo$dijkstra_args$dijkstra_argsTupleSchemeFactory.class
 grafo/Grafo$Client$Factory.class
 grafo/Grafo$listar_vertices_local_args$listar_vertices_local_argsTupleScheme.class
+grafo/DeletaAresta.class
 grafo/Grafo$atualiza_vertice_args.class
 grafo/Grafo$AsyncClient$le_vertice_call.class
 grafo/Grafo$AsyncProcessor$listar_vertices$1.class
@@ -106,6 +109,7 @@ grafo/Grafo$deleta_aresta_result.class
 grafo/Grafo$AsyncClient$listar_arestas_call.class
 grafo/Grafo$listar_vertices_local_result$_Fields.class
 grafo/Grafo$AsyncClient$listar_vizinhos_vertice_call.class
+grafo/Dijkstra.class
 grafo/Grafo$graph_mutex_acquire_args$graph_mutex_acquire_argsStandardSchemeFactory.class
 grafo/Grafo$Processor$graph_mutex_release.class
 grafo/Grafo$AsyncClient$dijkstra_call.class
@@ -172,6 +176,7 @@ grafo/Grafo$deleta_aresta_result$deleta_aresta_resultStandardScheme.class
 grafo/Grafo$deleta_arestas_vertice_args.class
 grafo/Grafo$AsyncProcessor$le_aresta.class
 grafo/Grafo$listar_arestas_vertice_result$listar_arestas_vertice_resultStandardSchemeFactory.class
+grafo/ListarVerticesLocal.class
 grafo/Grafo$listar_arestas_local_args$listar_arestas_local_argsTupleSchemeFactory.class
 grafo/Grafo$AsyncProcessor.class
 grafo/Grafo$graph_mutex_acquire_result$_Fields.class
@@ -222,15 +227,18 @@ grafo/Grafo$Client.class
 grafo/Grafo$listar_vertices_result$_Fields.class
 grafo/Grafo$Processor$listar_vizinhos_vertice.class
 grafo/Grafo$listar_arestas_result$listar_arestas_resultStandardScheme.class
+grafo/AdicionaAresta.class
 grafo/Grafo$AsyncClient$listar_vertices_call.class
 grafo/Grafo$adiciona_vertice_result$_Fields.class
 grafo/Grafo$listar_arestas_local_args$_Fields.class
+grafo/ListarArestasLocal.class
 grafo/Grafo$listar_vertices_local_result$listar_vertices_local_resultStandardScheme.class
 grafo/Grafo$le_vertice_result$le_vertice_resultTupleScheme.class
 grafo/Aresta$ArestaStandardSchemeFactory.class
 grafo/Grafo$atualiza_vertice_args$atualiza_vertice_argsStandardScheme.class
 grafo/Grafo$deleta_vertice_args$deleta_vertice_argsStandardScheme.class
 grafo/Grafo$adiciona_vertice_args$_Fields.class
+grafo/LeAresta.class
 grafo/Grafo$AsyncClient$adiciona_vertice_call.class
 grafo/Grafo$listar_arestas_args$listar_arestas_argsTupleSchemeFactory.class
 grafo/Grafo$deleta_arestas_vertice_args$deleta_arestas_vertice_argsTupleSchemeFactory.class
@@ -269,6 +277,7 @@ grafo/Grafo$deleta_aresta_args$deleta_aresta_argsTupleSchemeFactory.class
 grafo/Grafo$atualiza_aresta_args$atualiza_aresta_argsStandardScheme.class
 grafo/Grafo$listar_arestas_args$listar_arestas_argsStandardScheme.class
 grafo/Grafo$adiciona_vertice_result$adiciona_vertice_resultTupleScheme.class
+grafo/ListarVizinhosVertice.class
 grafo/Grafo$deleta_aresta_result$_Fields.class
 grafo/Grafo$dijkstra_result$_Fields.class
 grafo/Grafo$adiciona_vertice_result.class
@@ -289,6 +298,7 @@ grafo/Grafo$atualiza_vertice_result$_Fields.class
 grafo/Grafo$listar_arestas_local_result$listar_arestas_local_resultStandardSchemeFactory.class
 grafo/Grafo$AsyncProcessor$graph_mutex_release$1.class
 grafo/Vertice$VerticeStandardSchemeFactory.class
+grafo/DeletaVertice.class
 grafo/Grafo$listar_arestas_vertice_result$listar_arestas_vertice_resultTupleScheme.class
 grafo/Grafo$AsyncProcessor$listar_vertices_local.class
 grafo/Grafo$deleta_arestas_vertice_result$_Fields.class
@@ -310,6 +320,7 @@ grafo/Grafo$atualiza_aresta_args$_Fields.class
 grafo/Grafo$atualiza_vertice_args$atualiza_vertice_argsStandardSchemeFactory.class
 grafo/Grafo$atualiza_aresta_result.class
 grafo/Grafo$atualiza_vertice_result$atualiza_vertice_resultTupleSchemeFactory.class
+grafo/ListarArestasVertice.class
 grafo/Grafo$listar_vizinhos_vertice_result$listar_vizinhos_vertice_resultStandardScheme.class
 grafo/Grafo$Iface.class
 grafo/Grafo$AsyncProcessor$listar_vertices_local$1.class

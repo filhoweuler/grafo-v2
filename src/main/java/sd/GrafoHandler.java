@@ -36,8 +36,6 @@ public class GrafoHandler implements Grafo.Iface {
 
     private CopycatClient[] copycatClients;
 
-	HashMap<Integer, Vertice> vertices = new HashMap<>();
-    HashMap<Integer, List<Aresta> > AdjList = new HashMap<>();
     HashMap<Integer, Semaphore> mutex_vertices = new HashMap<>();
     Semaphore graph_mutex = new Semaphore(1);
     int n, id, ini, vnum, numero_clusters, inicial_cluster,tamanho_cluster;
@@ -129,18 +127,11 @@ public class GrafoHandler implements Grafo.Iface {
 	public void adiciona_vertice(Vertice v) throws org.apache.thrift.TException {
         int h = hash(v.nome);
 
-        System.out.println("Adiciona called");
-
         CopycatClient c = copycatClients[h];
         Vertice vx = findVertice(v.nome);
 
-        System.out.println("findVertice called");
-
 		if(vx.nome == -1) {
 			System.out.println("Vertice inserido : " + v.nome + "no cluster " + h);
-			vertices.put(v.nome, v);
-            AdjList.put(v.nome, new ArrayList());
-            if(v.nome > vnum) vnum = v.nome;
 
             CompletableFuture<Object> f = c.submit(new AdicionaVertice(v));
             Object resultado = f.join();
@@ -165,16 +156,10 @@ public class GrafoHandler implements Grafo.Iface {
     public void atualiza_vertice(int nome, Vertice v) throws org.apache.thrift.TException {
         int h = hash(nome);
 
-        if(h != id) {
-            clients[h].atualiza_vertice(nome, v);
-            return;
-        }
+        CopycatClient c = copycatClients[h];
+        CompletableFuture<Object> f = c.submit(new AtualizaVertice(nome, v));
+        Object res = f.join();
 
-        if(vertices.containsKey(nome)) {
-            vertices.put(nome, v);
-        } else {
-            System.out.println("Vertice " + nome + " nao existe no Grafo! ");
-        }
     }
 
     @Override
@@ -182,30 +167,29 @@ public class GrafoHandler implements Grafo.Iface {
 
         int h = hash(nome);
 
-        if(h != id) {
-            clients[h].deleta_vertice(nome);
-            return;
-        }
+        CopycatClient c = copycatClients[h];
+        CompletableFuture<Object> f = c.submit(new DeletaVertice(nome));
+        Object res = f.join();
 
-        if(vertices.containsKey(nome)) {
-            vertices.remove(nome);
-            deleta_arestas_vertice(nome);
-            // for(int i = 0; i < n; i++)
-            //     if(i != id)
-            //         clients[i].deleta_arestas_vertice(nome);
-        }
+        deleta_arestas_vertice(nome);
     }
 
     @Override
     public void deleta_arestas_vertice(int nome) throws org.apache.thrift.TException {
-        if(AdjList.containsKey(nome)) {
-            for(Aresta a : AdjList.get(nome)) {
-                if(!a.direcionada) {
-                    deleta_aresta(a.v2, nome);
-                }
+        int h = hash(nome);
+        CopycatClient c = copycatClients[h];
+        CompletableFuture<Object> f = c.submit(new ListarArestasVertice(nome));
+        List<Aresta> l = (List<Aresta>) f.join(); 
+
+        
+        for(Aresta a : l) {
+            if(!a.direcionada) {
+                f = c.submit(new DeletaAresta(a.v2, nome));
+                f.join();
             }
-            AdjList.remove(nome);
-        }        
+            f = c.submit(new DeletaAresta(a.v1, a.v2));
+            f.join();
+        }       
     }
 
     @Override
@@ -213,39 +197,40 @@ public class GrafoHandler implements Grafo.Iface {
         int u = a.v1;
         int v = a.v2;
 
-        int h = hash(u);
+        CopycatClient uc = copycatClients[hash(u)];
+        CopycatClient vc = copycatClients[hash(v)];
 
-        if(h != id) {
-            clients[h].adiciona_aresta(a);
-            return;
-        }
-
-        Aresta a2 = new Aresta(a);
+        Aresta a2 = new Aresta(a); //aresta invertida
         int aux = a2.v1;
         a2.v1 = a2.v2;
         a2.v2 = aux;
 
-        Vertice v1_check = le_vertice(u);
-        Vertice v2_check = le_vertice(v);
+        CompletableFuture<Object> f = uc.submit(new LeVertice(u));
+        Vertice v1_check = (Vertice) f.join();
 
-        if (v1_check != null && v2_check != null) { //nesse caso os vertices existem na rede
+        f = vc.submit(new LeVertice(v));
+        Vertice v2_check = (Vertice) f.join();
 
-            if(!AdjList.containsKey(u)) {
-                AdjList.put(u, new ArrayList());
-            }
+        if (v1_check.getNome() != -1 && v2_check.getNome() != - 1) { //nesse caso os vertices existem na rede
 
-            if(!AdjList.containsKey(v)) {
-                AdjList.put(v, new ArrayList());
-            }
-            
-            if(!AdjList.get(u).contains(a)) {
+            f = uc.submit(new AdicionaAresta(a));
+            boolean res = (boolean) f.join();
+
+            if(res) {
                 System.out.println("Adicionada a aresta " + a + "no vertice " + u);
-                AdjList.get(u).add(a);
-
+            } else {
+                System.out.println("Aresta "+ a +"nao adicionada!");
             }
 
-            if(!a.direcionada && !AdjList.get(v).contains(a2)) {
-                AdjList.get(v).add(a2);
+            if(!a.direcionada) {
+                f = vc.submit(new AdicionaAresta(a2));
+                res = (boolean) f.join();
+
+                if(res) {
+                    System.out.println("Adicionada a aresta " + a2 + "no vertice " + v);
+                } else {
+                    System.out.println("Aresta "+ a2 +"nao adicionada!");
+                }
             }
 
         } else {
@@ -258,62 +243,64 @@ public class GrafoHandler implements Grafo.Iface {
     @Override
     public Aresta le_aresta(int v1, int v2) throws org.apache.thrift.TException {
         int h = hash(v1);
+        Aresta ret = new Aresta(-1,-1, -1, false,"");
 
-        if(h != id) {
-            return clients[h].le_aresta(v1, v2);
+        CopycatClient c = copycatClients[h];
+
+        CompletableFuture<Object> f = c.submit(new LeVertice(v1));
+        Vertice v = (Vertice) f.join();
+
+        if (v.getNome() != -1) {
+
+            f = c.submit(new LeAresta(v1,v2));
+            Aresta a = (Aresta) f.join();
+            if(a != null) ret = a;
+        } else {
+            System.out.println("Vertice origem informado nao existe!!");
         }
 
-        Vertice v = le_vertice(v1);
-
-        if (v != null && AdjList.containsKey(v1)) {
-            for(Aresta a : AdjList.get(v1)) {
-                if (a.v1 == v1 && a.v2 == v2) {
-                    return a;
-                }
-            }
-        }
-
-        return null;
+        return ret;
     }
 
     @Override
     public void atualiza_aresta(int v1, int v2, Aresta a) throws org.apache.thrift.TException {
-        int h = hash(v1);
+        int u = v1;
+        int v = v2;
 
-        if(h != id) {
-            clients[h].atualiza_aresta(v1, v2, a);
-            return;
-        }
+        CopycatClient uc = copycatClients[hash(u)];
+        CopycatClient vc = copycatClients[hash(v)];
 
-        Vertice v1_check = le_vertice(v1);
-        Vertice v2_check = le_vertice(v2);
+        Aresta a2 = new Aresta(a); //aresta invertida
+        int aux = a2.v1;
+        a2.v1 = a2.v2;
+        a2.v2 = aux;
 
-        if (v1_check != null && v2_check != null) {
-            if(!AdjList.containsKey(v1)) {
-                AdjList.put(v1, new ArrayList());
-            }
+        CompletableFuture<Object> f = uc.submit(new LeVertice(u));
+        Vertice v1_check = (Vertice) f.join();
 
-            for(int i = 0; i < AdjList.get(v1).size(); i++) {
-                if(AdjList.get(v1).get(i).v1 == v1 && AdjList.get(v1).get(i).v2 == v2) {                    
-                    AdjList.get(v1).set(i, a);
-                    System.out.println("Aresta alterada! " + AdjList.get(v1).get(i));
-                }
+        f = vc.submit(new LeVertice(v));
+        Vertice v2_check = (Vertice) f.join();
+
+        if (v1_check.getNome() != -1 && v2_check.getNome() != -1) {
+
+            f = uc.submit(new AtualizaAresta(u, v, a));
+            boolean res = (boolean) f.join();
+
+            if(res) {
+                System.out.println("Aresta alterada!!");
+            } else {
+                System.out.println("Falha ao alterar aresta!!");
             }
 
             if (!a.direcionada) {
-                if(!AdjList.containsKey(v2)) {
-                    AdjList.put(v2, new ArrayList());
-                }
-                for(int i = 0; i < AdjList.get(v2).size(); i++) {
-                    if(AdjList.get(v2).get(i).v1 == v2 && AdjList.get(v2).get(i).v2 == v1) {
-                        Aresta a2 = new Aresta(a);
-                        int ax = a2.v1;
-                        a2.v1 = a2.v2;
-                        a2.v2 = ax;
-                        AdjList.get(v2).set(i, a2);
-                        // System.out.println("Aresta alterada! " + AdjList.get(v2).get(i));
-                    }
-                }   
+                f = vc.submit(new AtualizaAresta(v, u, a2));
+                res = (boolean) f.join();
+
+                if(res) {
+                    System.out.println("Aresta alterada!!");
+                } else {
+                    System.out.println("Falha ao alterar aresta!!");
+                }  
             }
         }
     }
@@ -322,26 +309,27 @@ public class GrafoHandler implements Grafo.Iface {
     public void deleta_aresta(int v1, int v2) throws org.apache.thrift.TException {
         int h = hash(v1);
 
-        if(h != id) {
-            clients[h].deleta_aresta(v1, v2);
-            return;
-        }
+        CopycatClient c = copycatClients[h];
+        CompletableFuture<Object> f = c.submit(new DeletaAresta(v1, v2));
+        boolean res = (boolean) f.join();
 
-        for(int i = 0; i < AdjList.get(v1).size(); i++) {
-            if (AdjList.get(v1).get(i).v1 == v1 && AdjList.get(v1).get(i).v2 == v2) {
-                AdjList.get(v1).remove(i);
-            }
+        if(res) {
+            System.out.println("Deletado com sucesso!");
+        } else {
+            System.out.println("Falha ao deletar!");
         }
     }
     
     @Override
     public List<Vertice> listar_vertices() throws org.apache.thrift.TException {
-        List<Vertice> aux = listar_vertices_local();
+        List<Vertice> aux = new ArrayList();
 
-        for(int i = 0; i < n; i++) {
-            if (i != id) {
-                aux.addAll(clients[i].listar_vertices_local());
-            }
+        for(int i = 0; i < numero_clusters; i++) {
+            System.out.println(i);
+            CopycatClient c = copycatClients[i];
+            CompletableFuture f = c.submit(new ListarVerticesLocal());
+            List<Vertice> res = (List<Vertice>) f.join();
+            if(res != null) aux.addAll(res);
         }
 
         return aux;
@@ -349,13 +337,14 @@ public class GrafoHandler implements Grafo.Iface {
 
     @Override
     public List<Vertice> listar_vertices_local() throws org.apache.thrift.TException {
-        List<Vertice> aux = new ArrayList();
+        CopycatClient c = copycatClients[id/tamanho_cluster];
+        CompletableFuture f = c.submit(new ListarVerticesLocal());
+        List<Vertice> aux = (List<Vertice>) f.join();
 
-        System.out.println("\nListando vertices do Server " + id);
+        System.out.println("\nListando vertices do Cluster " + id/tamanho_cluster);
 
-        for(Vertice v : vertices.values()) {
+        for(Vertice v : aux) {
             System.out.println(v);
-            aux.add(v);
         }
 
         System.out.println("");
@@ -365,12 +354,12 @@ public class GrafoHandler implements Grafo.Iface {
 
     @Override
     public List<Aresta> listar_arestas() throws org.apache.thrift.TException {
-        List<Aresta> aux = listar_arestas_local();
+        List<Aresta> aux = new ArrayList();
 
-        for(int i = 0; i < n; i++) {
-            if (i != id) {
-                aux.addAll(clients[i].listar_arestas_local());
-            }
+        for(int i = 0; i < numero_clusters; i++) {
+            CompletableFuture f = copycatClients[i].submit(new ListarArestasLocal());
+            List<Aresta> res = (List<Aresta>) f.join();
+            aux.addAll(res);
         }
 
         return aux;
@@ -378,15 +367,14 @@ public class GrafoHandler implements Grafo.Iface {
 
     @Override
     public List<Aresta> listar_arestas_local() throws org.apache.thrift.TException {
-        List<Aresta> aux = new ArrayList();
+        CopycatClient c = copycatClients[id/tamanho_cluster];
+        CompletableFuture f = c.submit(new ListarArestasLocal());
+        List<Aresta> aux = (List<Aresta>) f.join();
 
-        System.out.println("\nListando arestas no Server " + id + ".");
+        System.out.println("\nListando arestas do Cluster " + id/tamanho_cluster);
 
-        for(List<Aresta> l : AdjList.values()) {
-            for (Aresta x : l) {
-                System.out.println(x);
-                aux.add(x);
-            }
+        for(Aresta v : aux) {
+            System.out.println(v);
         }
 
         System.out.println("");
@@ -400,21 +388,17 @@ public class GrafoHandler implements Grafo.Iface {
         
 
         int h = hash(nome);
-        if(h != id) {
-            List<Aresta> ans = clients[h].listar_arestas_vertice(nome);
-            return ans;
-        }
+        
+        CopycatClient c = copycatClients[h];
+        CompletableFuture<Object> f = c.submit(new ListarArestasVertice(nome));
+        List<Aresta> l = (List<Aresta>)f.join();
 
-        if(!AdjList.containsKey(nome)) {
-            System.out.println("Vertice nao existe o grafo!");
-            return new ArrayList();
-        }
 
-        for(Aresta a : AdjList.get(nome)) {
+        for(Aresta a : l) {
             System.out.println(a);
         }
 
-        return AdjList.get(nome);
+        return l;
     }
 
     @Override
@@ -424,14 +408,15 @@ public class GrafoHandler implements Grafo.Iface {
 
         System.out.println("O vertice " + nome + " é vizinho dos seguintes vertices:");
 
-        for(int i = 0; i < 5; i++) {
-            if(id != i) aux = clients[i].listar_arestas_local();
-            else aux = listar_arestas_local();
+        for(int i = 0; i < numero_clusters; i++) {
+            CompletableFuture f = copycatClients[i].submit(new ListarArestasLocal());
+            aux = (List<Aresta>) f.join();
+
             for(Aresta a : aux) {
                 if(a.v1 == nome) {
                     Vertice v = le_vertice(a.v2);
                     System.out.println(v);
-                    ans.add( v );
+                    ans.add(v);
                 }
             }
         }
