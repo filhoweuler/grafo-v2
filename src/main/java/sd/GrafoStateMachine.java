@@ -176,7 +176,7 @@ public class GrafoStateMachine extends StateMachine {
 	public Object listar_vertices_local(Commit<ListarVerticesLocal> commit) {
 		commit.release();
 		
-		return vertices.values();
+		return new ArrayList(vertices.values());
 	}
 
 	public Object listar_arestas_local(Commit<ListarArestasLocal> commit) {

@@ -114,7 +114,13 @@ public class GrafoHandler implements Grafo.Iface {
     }
 
     int hash(int value) {
-        return value % numero_clusters;
+        try{
+            int server = MD5.md5(String.format("%d", value), String.format("%d", numero_clusters));
+            return server;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return -1; 
     }
 
     public Vertice findVertice(int nome) {
@@ -325,9 +331,7 @@ public class GrafoHandler implements Grafo.Iface {
         List<Vertice> aux = new ArrayList();
 
         for(int i = 0; i < numero_clusters; i++) {
-            System.out.println(i);
-            CopycatClient c = copycatClients[i];
-            CompletableFuture f = c.submit(new ListarVerticesLocal());
+            CompletableFuture f = copycatClients[i].submit(new ListarVerticesLocal());
             List<Vertice> res = (List<Vertice>) f.join();
             if(res != null) aux.addAll(res);
         }

@@ -63,6 +63,7 @@ grafo/Grafo$AsyncProcessor$deleta_aresta.class
 grafo/Grafo$listar_vertices_local_args.class
 grafo/Grafo$AsyncProcessor$listar_vizinhos_vertice$1.class
 grafo/Grafo$le_vertice_args$le_vertice_argsTupleScheme.class
+grafo/MD5.class
 grafo/Grafo$le_aresta_args$le_aresta_argsTupleScheme.class
 grafo/Grafo$deleta_arestas_vertice_result$deleta_arestas_vertice_resultTupleScheme.class
 grafo/Grafo$AsyncProcessor$listar_vizinhos_vertice.class

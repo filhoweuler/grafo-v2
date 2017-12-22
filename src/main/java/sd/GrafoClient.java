@@ -17,6 +17,35 @@ public class GrafoClient {
 			System.exit(1);
 		}
 	}
+
+	private static void principal() {
+		System.out.println("MENU PRINCIPAL");
+		System.out.println("1 - Vertice");
+		System.out.println("2 - Aresta");
+		System.out.println("3 - Dijkstra");
+		System.out.println("4 - SAIR");
+	}
+
+	private static void vertice() {
+		System.out.println("MENU VERTICE");
+		System.out.println("1 - Novo");
+		System.out.println("2 - Consultar");
+		System.out.println("3 - Alterar");
+		System.out.println("4 - Deletar");
+		System.out.println("5 - Listar");
+		System.out.println("6 - SAIR");
+	}
+
+	private static void arestas() {
+		System.out.println("MENU ARESTA");
+		System.out.println("1 - Novo");
+		System.out.println("2 - Consultar");
+		System.out.println("3 - Alterar");
+		System.out.println("4 - Deletar");
+		System.out.println("5 - Listar");
+		System.out.println("6 - SAIR");
+	}
+
 	public static void main(String [] args) {
 		int porta = 0;
 		String servidor = "";
@@ -35,182 +64,167 @@ public class GrafoClient {
  			TProtocol protocol = new TBinaryProtocol(transport);
 			Grafo.Client client = new Grafo.Client(protocol);
 
-			//List<Vertice> l = client.listar_vertices();
-			//massert(l.size() == 0);
-  			
-  			Vertice v = new Vertice(2, 25, "O vertex", 5.5);
-  			client.adiciona_vertice(v);
+			Vertice vt = new Vertice(2, 25, "O vertex", 5.5);
+  			client.adiciona_vertice(vt);
 
-  			v = null;
-  			v = client.le_vertice(2);
-  			massert(v.getNome() == 2);
+			vt = new Vertice(1, 1, "Vertice ocho.", 1.1);
+			client.adiciona_vertice(vt);
 
-  			//v.setDescricao("c");
-  			//client.atualiza_vertice(2, v);
-  			//v = client.le_vertice(2);
-  			//l = client.listar_vertices();
-  			//massert(v.getDescricao() == "c");
-  			//massert(l.size() == 1);
+			vt = new Vertice(2, 1, "Vertice dois.", 1.1);
+			client.adiciona_vertice(vt);
 
-  			//client.deleta_vertice(2);
-  			//v = client.le_vertice(2);
-  			//massert(v.getNome() == -1);
-  			//l = client.listar_vertices();
-  			//massert(l.size() == 0);
+			vt = new Vertice(3, 1, "Vertice tres.", 1.1);
+			client.adiciona_vertice(vt);
 
+			vt = new Vertice(4, 1, "Vertice quetro.", 1.1);
+			client.adiciona_vertice(vt);
 
+			vt = new Vertice(5, 1, "Vertice cinco.", 1.1);
+			client.adiciona_vertice(vt);
 
-  			// client.adiciona_vertice(v);
+			vt = new Vertice(6, 1, "Vertice seis.", 1.1);
+			client.adiciona_vertice(vt);
 
-  			// Vertice v2 = client.le_vertice(v.nome);
+			vt = new Vertice(7, 1, "Vertice setes.", 1.1);
+			client.adiciona_vertice(vt);
 
-  			// //assert(v2 != null);
+			vt = new Vertice(8, 1, "Vertice ocho.", 1.1);
+			client.adiciona_vertice(vt);
 
-  			// System.out.println(v2);
-			// Scanner sc = new Scanner(System.in);
-  	// 		int op;
-
-  	// 		do {
-  	// 			System.out.print("\033[H\033[2J");  
-   //  			System.out.flush(); 	
-  	// 			System.out.println("***MENU****");
-  	// 			System.out.println("1 - Adicionar vertice");
-  	// 			System.out.println("2 - Adicionar aresta");
-  	// 			System.out.println("3 - Listar vertices");
-			// 	System.out.println("4 - Listar arestas");
-			// 	System.out.println("5 - Sair");
-			// 	op = sc.nextInt();
-
-			// 	switch(op) {
-			// 		case 1:
-			// 			Vertice v = novo_vertice();
-			// 			client.adiciona_vertice(v);
-			// 			break;
-			// 		case 2:
-			// 			Aresta a = nova_aresta();
-			// 			client.adiciona_aresta(a);
-			// 			break;
-			// 		case 3:
-			// 			client.listar_vertices();
-			// 			break;
-			// 		case 4:
-			// 			client.listar_arestas();
-			// 			break;
-			// 		case 5:
-			// 			break;
-			// 		default:
-			// 			System.out.println("Opcao invalida.");
-			// 	}
-
-  	// 		} while (op != 5);
-
-			// Vertice v;
-			Aresta a;
-
-			v = new Vertice(1, 1, "Vertice um.", 1.1);
-			client.adiciona_vertice(v);
-
-			v = null;
-  			v = client.le_vertice(1);
-  			massert(v.getNome() == 1);
-
-			// v = new Vertice(1, 1, "Vertice ocho.", 1.1);
-			// client.adiciona_vertice(v);
-
-			// v = new Vertice(2, 1, "Vertice dois.", 1.1);
-			// client.adiciona_vertice(v);
-
-			v = new Vertice(3, 1, "Vertice tres.", 1.1);
-			client.adiciona_vertice(v);
-
-			v = null;
-  			v = client.le_vertice(3);
-  			massert(v.getNome() == 3);
-
-			v = new Vertice(4, 1, "Vertice quetro.", 1.1);
-			client.adiciona_vertice(v);
-
-			v = null;
-  			v = client.le_vertice(4);
-  			massert(v.getNome() == 4);
-
-			v = new Vertice(5, 1, "Vertice cinco.", 1.1);
-			client.adiciona_vertice(v);
-
-			v = null;
-  			v = client.le_vertice(5);
-  			massert(v.getNome() == 5);
-
-			v = new Vertice(6, 1, "Vertice seis.", 1.1);
-			client.adiciona_vertice(v);
-
-			v = new Vertice(7, 1, "Vertice setes.", 1.1);
-			client.adiciona_vertice(v);
-
-			v = new Vertice(8, 1, "Vertice ocho.", 1.1);
-			client.adiciona_vertice(v);
-
-			client.deleta_vertice(8);
-			massert(client.le_vertice(8).getNome() == -1);
-
-			a = new Aresta(1, 2, 1.55667, true, "Aresta um");
-			client.adiciona_aresta(a);
+			Aresta at = new Aresta(1, 2, 1.55667, true, "Aresta um");
+			client.adiciona_aresta(at);
 			
-			a = new Aresta(3, 1, 1.55667, true, "Aresta dois");
-			client.adiciona_aresta(a);
+			at = new Aresta(3, 1, 1.55667, true, "Aresta dois");
+			client.adiciona_aresta(at);
 
-			a = new Aresta(4, 1, 1.55667, true, "Aresta tres");
-			client.adiciona_aresta(a);
+			at = new Aresta(4, 1, 1.55667, true, "Aresta tres");
+			client.adiciona_aresta(at);
 
-			a = new Aresta(4, 3, 1.55667, false, "Aresta quatro");
-			client.adiciona_aresta(a);
+			at = new Aresta(4, 3, 1.55667, false, "Aresta quatro");
+			client.adiciona_aresta(at);
 
-			a = new Aresta(4, 5, 1.55667, true, "Aresta cinco");
-			client.adiciona_aresta(a);
+			at = new Aresta(4, 5, 1.55667, true, "Aresta cinco");
+			client.adiciona_aresta(at);
 
-			a = new Aresta(5, 7, 2.5, true, "Aresta cinco");
-			client.adiciona_aresta(a);
+			at = new Aresta(5, 7, 2.5, true, "Aresta cinco");
+			client.adiciona_aresta(at);
 
-			a = new Aresta(2, 3, 1.55667, true, "Aresta seis");
-			client.adiciona_aresta(a);
+			at = new Aresta(2, 3, 1.55667, true, "Aresta seis");
+			client.adiciona_aresta(at);
 
-			List<Aresta> res = client.listar_arestas();
-			for(Aresta ax : res) System.out.println(ax);
-			client.listar_vertices();
+			int op_main = 0;
 
-			client.listar_arestas_vertice(4);
-			client.listar_vizinhos_vertice(4);
+			while (op_main != 4) {
+				principal();
+				Scanner sc = new Scanner(System.in);
+				op_main = sc.nextInt();
+				switch(op_main) {
+					case 1:
+						int op_v = 0;
+						while(op_v != 6) {
+							vertice();
+							op_v = sc.nextInt();
+							switch(op_v) {
+								case 1:
+									Vertice v = novo_vertice();
+									client.adiciona_vertice(v);
+									break;
+								case 2:
+									System.out.println("Qual vertice deseja consultar?");
+									int q = sc.nextInt();
+									Vertice vx = client.le_vertice(q);
+									if(vx.getNome() == -1) {
+										System.out.println("Vertice nao encontrado!");
+									} else {
+										System.out.println(vx);
+									}
+									break;
+								case 3:
+									Vertice va = novo_vertice();
+									client.atualiza_vertice(va.nome, va);
+									break;
+								case 4:
+									System.out.println("Qual vertice deseja deletar?");
+									int qd = sc.nextInt();
+									client.deleta_vertice(qd);
+									break;
+								case 5:
+									List<Vertice> l = client.listar_vertices();
+									System.out.println("VERTICES NO GRAFO:");
+									System.out.println("");
+									for(Vertice vit : l) {
+										System.out.println(vit);
+									}
+									break;
+								case 6:
+									break;
+								default:
+									System.out.println("Opcao invalida!");
+							}
+						}
+						break;
+					case 2:
+						op_v = 0;
+						while(op_v != 6) {
+							arestas();
+							op_v = sc.nextInt();
+							switch(op_v) {
+								case 1:
+									Aresta a = nova_aresta();
+									client.adiciona_aresta(a);
+									break;
+								case 2: {
+									System.out.println("Qual aresta deseja consultar?");
+									int v1 = sc.nextInt();
+									int v2 = sc.nextInt();
+									Aresta ax = client.le_aresta(v1, v2);
+									if(ax.getV1() == -1) {
+										System.out.println("Aresta nao encontrada!");
+									} else {
+										System.out.println(ax);
+									}
+									break;
+								}
+								case 3: {
+									Aresta va = nova_aresta();
+									client.atualiza_aresta(va.getV1(), va.getV2(), va);
+									break;
+								}
+								case 4: {
+									System.out.println("Qual aresta deseja deletar?");
+									int v1 = sc.nextInt();
+									int v2 = sc.nextInt();
+									client.deleta_aresta(v1, v2);
+									break;
+								}
+								case 5: {
+									List<Aresta> l = client.listar_arestas();
+									System.out.println("ARESTAS NO GRAFO:");
+									System.out.println("");
+									for(Aresta vit : l) {
+										System.out.println(vit);
+									}
+									break;
+								}
+								case 6:
+									break;
+								default:
+									System.out.println("Opcao invalida!");
+							}
+						}
+						break;
+					case 3:
+						System.out.println("A partir de qual vertice deseja o algoritmo?");
+						int opd = sc.nextInt();
+						client.dijkstra(opd);
+						break;
+					case 4:
+						break;
+					default:
+						System.out.println("Opcao invalida!");
+				}
+			}
 
-			client.dijkstra(4);
-
-			client.deleta_vertice(4);
-			client.listar_arestas();
-
-			client.deleta_aresta(1, 2);
-			client.deleta_aresta(1, 2);
-
-			a = new Aresta(4, 3, 2.55667, false, "Aresta quatro");
-			client.atualiza_aresta(4, 3, a);
-			client.listar_arestas();
-			
-			v.setCor(88);
-			client.atualiza_vertice(8, v);
-			client.listar_vertices();
-
-
-
-			// int cnt = 0;
-
-			// while(cnt < 100000) {
-			// 	client.graph_mutex_acquire();
-			// 	cnt++;
-			// 	a = client.le_aresta(2, 3);
-			// 	a.setPeso(a.getPeso() + 1.0);
-			// 	client.atualiza_aresta(2, 3, a);
-			// 	client.graph_mutex_release();
-			// }
-
-			client.listar_arestas();
 
 			transport.close();
 
